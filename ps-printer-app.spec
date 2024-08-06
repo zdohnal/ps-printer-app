@@ -11,7 +11,7 @@
 
 Name: ps-printer-app
 Version: 0
-Release: 1%{?dist}
+Release: 2%{?dist}
 # the CUPS exception text is the same as LLVM exception, so using that name with
 # agreement from legal team
 # https://lists.fedoraproject.org/archives/list/legal@lists.fedoraproject.org/message/A7GFSD6M3GYGSI32L2FC5KB22DUAEQI3/
@@ -20,6 +20,7 @@ Summary: PAPPL-based Printer Application for PostScript printers.
 URL: %{forgeurl}
 Source0: %{forgesource}
 Source1: ps-printer-app.sysusers
+Source2: ps-printer-app.conf
 
 # Services which run as root cannot create listener sockets
 Patch0: ps-printer-app_service-user.patch
@@ -63,6 +64,7 @@ This work (or now the code of pappl-retrofit) is derived from the hp-printer-app
 %make_install libdir=%{buildroot}%{_libdir} serverbin=%{buildroot}%{_libdir}/ps-printer-app
 
 install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/ps-printer-app.conf
+install -p -D -m 0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/ps-printer-app.conf
 
 %pre
 %sysusers_create_compat %{SOURCE1}
@@ -86,9 +88,13 @@ install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/ps-printer-app.conf
 %dir %{_datadir}/ps-printer-app
 %{_datadir}/ps-printer-app/testpage.ps
 %attr(-, ps-printer-app, ps-printer-app) %dir %{_sharedstatedir}/ps-printer-app
+%config(noreplace) %{_sysconfdir}/ps-printer-app.conf
 %{_sysusersdir}/ps-printer-app.conf
 
 %changelog
+* Tue Aug 06 2024 Zdenek Dohnal <zdohnal@redhat.com> - 0-2.20230918git5dbdece
+- initial import (bz#)
+
 * Mon Sep 18 2023 Brandon Nielsen <nielsenb@jetfuse.net> 0-1.20230918git5dbdece
 - Update to 5dbdece git snapshot
 - Change to SPDX license identifier
